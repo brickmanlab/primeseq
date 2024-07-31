@@ -6,13 +6,13 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
-
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [FastQC](#fastqc) - Raw read QC
+- [StarSolo](#starsolo) - Align raw reads
+- [MTX_TO_CSV](#mtx_to_csv) - Merges samples names to respective barcodes
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -38,6 +38,19 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 :::note
 The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 :::
+
+### StarSolo
+
+**Output directory: `results/star`**
+
+- Files will be organized in one directory per sample
+- Contains the mapped BAM files and output metrics created by STARsolo
+
+### MTX_TO_CSV
+
+**Output directory: `results/counts`**
+
+- Internal tool which matches barcodes to wells and samples
 
 ### MultiQC
 

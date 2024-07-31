@@ -1,3 +1,5 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+sample,fastq_1,fastq_2,plate_id
+501,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/701_501_S1_L001_R1_001.fastq.gz,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/701_501_S1_L001_R2_001.fastq.gz,1
+502,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/702_502_S2_L001_R1_001.fastq.gz,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/702_502_S2_L001_R2_001.fastq.gz,1
+503,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/703_503_S3_L001_R1_001.fastq.gz,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/703_503_S3_L001_R2_001.fastq.gz,1
+504,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/704_504_S4_L001_R1_001.fastq.gz,/maps/projects/dan1/data/Brickman/assays/PRIME_CS_20240715/raw/fastq/704_504_S4_L001_R2_001.fastq.gz,1
