@@ -27,10 +27,12 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_prim
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
 params.fasta = getGenomeAttribute('fasta')
+params.gtf = getGenomeAttribute('gtf')
+params.star_index = getGenomeAttribute('star')
+
+ch_star_index = Channel.fromPath(params.star_index, checkIfExists: true).map{ it -> [ [id:'star_index'], it ] }.collect()
+ch_wells = Channel.fromPath(params.wells, checkIfExists: true)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +54,9 @@ workflow BRICKMANLAB_PRIMESEQ {
     // WORKFLOW: Run pipeline
     //
     PRIMESEQ (
-        samplesheet
+        samplesheet,
+        ch_star_index,
+        ch_wells
     )
 
     emit:

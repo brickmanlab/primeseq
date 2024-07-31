@@ -26,8 +26,14 @@
                 "exists": true,
                 "pattern": "^\\S+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-            }
+            },
+            "plate_id": {
+              "type": "integer",
+              "pattern": "^\\d",
+              "errorMessage": "Plate ID with beads",
+              "meta": ["plate_id"]
+          }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fastq_1", "fastq_2", "plate_id"]
     }
 }

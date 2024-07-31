@@ -4,12 +4,14 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-validation'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_primeseq_pipeline'
+include { FASTQC                            } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
+include { STARSOLO                          } from '../subworkflows/local/starsolo'
+include { MAKE_COUNT_MATRIX                 } from '../subworkflows/local/make_count_matrix'
+include { paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText            } from '../subworkflows/local/utils_nfcore_primeseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,6 +23,8 @@ workflow PRIMESEQ {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    ch_star_index
+    ch_wells
 
     main:
 
@@ -35,6 +39,32 @@ workflow PRIMESEQ {
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+    //
+    // MODULE: Run STARSolo
+    //
+    ch_reads = ch_samplesheet.map { 
+        meta, fastq -> [ 
+            [ 
+                id: meta.id, 
+                plate_id: meta.plate_id,
+                whitelist: "$projectDir/assets/whitelist.tsv",
+                umi_len: 16,
+                umi_start: 13,
+                cb_len: 12,
+                cb_start: 1,
+            ], "CB_UMI_Simple", fastq 
+        ]
+    }
+    STARSOLO ( ch_reads, ch_star_index )
+    ch_versions = ch_versions.mix(STARSOLO.out.versions.first())
+    ch_multiqc_files = ch_multiqc_files.mix(STARSOLO.out.for_multiqc)
+
+    //
+    // MODULE: Merge wells and create count matrix
+    //
+    MAKE_COUNT_MATRIX ( STARSOLO.out.counts.combine(ch_wells) )
+    ch_versions = ch_versions.mix(MAKE_COUNT_MATRIX.out.versions.first())
 
     //
     // Collate and save software versions
