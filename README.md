@@ -10,41 +10,36 @@
 
 ## Introduction
 
-**brickmanlab/primeseq** is a bioinformatics pipeline that ...
-
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
-
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+**brickmanlab/primeseq** is a bioinformatics preprocessing pipeline for PRIME-seq
+datasets.
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+2. Align reads using ([`StarSolo`](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md))
+3. Merge well sheet with according barcodes
+4. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,fastq_1,fastq_2,plate_id
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,1
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+`wells.csv`
 
--->
+```csv
+pool,well,sample
+CONTROL_REP1,A1,Sample_1
+```
+
+Each row represents paired end FASTQ reads.
 
 Now, you can run the pipeline using:
 
@@ -52,9 +47,12 @@ Now, you can run the pipeline using:
 
 ```bash
 nextflow run brickmanlab/primeseq \
-   -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+    -with-tower \
+    -profile ku_sund_danhead,dancmpn02fl \
+    --genome GRCm39-2024-A \
+    --input samplesheet.csv \
+    --wells wells.csv \
+    --outdir output
 ```
 
 > [!WARNING]
@@ -63,11 +61,7 @@ nextflow run brickmanlab/primeseq \
 
 ## Credits
 
-brickmanlab/primeseq was originally written by ['Martin Proks', 'Nazmus Salehin'].
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+brickmanlab/primeseq was originally introduced by Nazmus Salehin and written by Martin Proks.
 
 ## Contributions and Support
 
@@ -75,10 +69,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use brickmanlab/primeseq for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+If you use brickmanlab/primeseq for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX)
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
