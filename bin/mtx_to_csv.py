@@ -65,19 +65,21 @@ def main(pool: str, solo_out: str, wells: str, barcode_plate: str):
     adata = parse_mtx(folder)
 
     # filter wells.csv based on pool
-    wells_filtered = pd.read_csv(wells).query("pool == @pool")
+    wells_filtered = pd.read_csv(wells, dtype=str).query("pool == @pool")
+
     if wells_filtered.empty:
         raise ValueError(f"After filtering for `{pool}`, no data were available ...")
 
     # match barcodes based on wells
     wells_filtered = wells_filtered.merge(
-        barcodes, how="left", left_on="well", right="well"
+        barcodes, how="left", left_on="well", right_on="Well"
     )
-    adata.obs = adata.obs.join(wells_filtered.set_index("barcode"))
+
+    adata.obs = adata.obs.join(wells_filtered.set_index("BC"))
     adata = adata[adata.obs.sort_values(by="sample").index].copy()
 
     # save
-    adata.to_df().top_csv(f"{pool}.counts.csv")
+    adata.to_df().to_csv(f"{pool}.counts.csv")
 
 
 if __name__ == "__main__":
