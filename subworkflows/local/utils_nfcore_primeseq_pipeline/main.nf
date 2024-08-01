@@ -207,7 +207,7 @@ def toolCitationText() {
     def citation_text = [
             "Tools used in the workflow included:",
             "FastQC (Andrews 2010),",
-            "StarSolo (Kaminow et al. 2021)"
+            "StarSolo (Kaminow et al. 2021)",
             "MultiQC (Ewels et al. 2016)",
             "."
         ].join(' ').trim()
