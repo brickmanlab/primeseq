@@ -77,6 +77,7 @@ def main(pool: str, solo_out: str, wells: str, barcode_plate: str):
 
     adata.obs = adata.obs.join(wells_filtered.set_index("BC"))
     adata = adata[adata.obs.sort_values(by="sample").index].copy()
+    adata.obs = adata.obs.reset_index().set_index("sample")
 
     # save
     adata.to_df().to_csv(f"{pool}.counts.csv")
