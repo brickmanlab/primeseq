@@ -77,6 +77,11 @@ def main(pool: str, solo_out: str, wells: str, barcode_plate: str):
 
     adata.obs = adata.obs.join(wells_filtered.set_index("BC"))
     adata = adata[adata.obs.sort_values(by="sample").index].copy()
+
+    # remove samples which are empty
+    adata = adata[~adata.obs["sample"].isna()].copy()
+
+    # set sample names instead of barcodes
     adata.obs = adata.obs.reset_index().set_index("sample")
 
     # save
