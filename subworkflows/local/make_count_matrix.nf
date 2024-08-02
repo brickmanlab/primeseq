@@ -10,7 +10,7 @@ workflow MAKE_COUNT_MATRIX {
     ch_versions = Channel.empty()
 
     MTX_TO_CSV ( reads )
-    
+
     ch_versions = ch_versions.mix(MTX_TO_CSV.out.versions.first())
 
     emit:

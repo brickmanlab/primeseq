@@ -11,7 +11,7 @@ workflow STARSOLO {
     ch_versions = Channel.empty()
 
     STARSOLO_ALIGN ( reads, index )
-    
+
     ch_versions = ch_versions.mix(STARSOLO_ALIGN.out.versions.first())
 
     emit:

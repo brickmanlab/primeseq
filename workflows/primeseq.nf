@@ -43,20 +43,20 @@ workflow PRIMESEQ {
     //
     // MODULE: Run STARSolo
     //
-    ch_reads = ch_samplesheet.map { 
-        meta, fastq -> [ 
-            [ 
-                id: meta.id, 
+    ch_reads = ch_samplesheet.map {
+        meta, fastq -> [
+            [
+                id: meta.id,
                 plate_id: meta.plate_id,
                 whitelist: ,
                 umi_len: 16,
                 umi_start: 13,
                 cb_len: 12,
                 cb_start: 1,
-            ], "CB_UMI_Simple", fastq 
+            ], "CB_UMI_Simple", fastq
         ]
     }
-    STARSOLO ( 
+    STARSOLO (
         ch_reads,
         file("$projectDir/assets/whitelist.tsv", checkIfExists: true),
         ch_star_index
