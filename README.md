@@ -1,3 +1,4 @@
+[![GitHub Actions Linting Status](https://github.com/brickmanlab/primeseq/actions/workflows/linting.yml/badge.svg)](https://github.com/brickmanlab/primeseq/actions/workflows/linting.yml)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
@@ -30,6 +31,9 @@ First, prepare a samplesheet with your input data that looks as follows:
 sample,fastq_1,fastq_2,plate_id
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,1
 ```
+
+> [!WARNING]
+> MAKE SURE THE `sample` (`samplesheet.csv`) is the same as `pool` (`wells.csv`)
 
 `wells.csv`
 

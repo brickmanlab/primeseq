@@ -7,7 +7,14 @@ lint:
   - .github/ISSUE_TEMPLATE/config.yml
   - .github/workflows/awstest.yml
   - .github/workflows/awsfulltest.yml
+  - .github/.dockstore.yml
+  - .github/workflows/branch.yml
+  - .github/workflows/linting_comment.yml
+  - conf/test.config
+  - conf/test_full.config
+  - .github/workflows/ci.yml
   files_unchanged:
+  - .github/workflows/linting.yml
   - CODE_OF_CONDUCT.md
   - assets/nf-core-primeseq_logo_light.png
   - docs/images/nf-core-primeseq_logo_light.png
