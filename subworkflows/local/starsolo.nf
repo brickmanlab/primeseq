@@ -10,7 +10,11 @@ workflow STARSOLO {
 
     ch_versions = Channel.empty()
 
-    STARSOLO_ALIGN ( reads, index )
+    STARSOLO_ALIGN (
+        reads,
+        Channel.fromPath("$projectDir/assets/whitelist.tsv", checkIfExists: true),
+        index
+    )
 
     ch_versions = ch_versions.mix(STARSOLO_ALIGN.out.versions.first())
 
