@@ -48,7 +48,7 @@ workflow PRIMESEQ {
             [ 
                 id: meta.id, 
                 plate_id: meta.plate_id,
-                whitelist: "$projectDir/assets/whitelist.tsv",
+                whitelist: ,
                 umi_len: 16,
                 umi_start: 13,
                 cb_len: 12,
@@ -56,7 +56,11 @@ workflow PRIMESEQ {
             ], "CB_UMI_Simple", fastq 
         ]
     }
-    STARSOLO ( ch_reads, ch_star_index )
+    STARSOLO ( 
+        ch_reads,
+        file("$projectDir/assets/whitelist.tsv", checkIfExists: true),
+        ch_star_index
+    )
     ch_versions = ch_versions.mix(STARSOLO.out.versions.first())
     ch_multiqc_files = ch_multiqc_files.mix(STARSOLO.out.for_multiqc)
 
