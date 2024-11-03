@@ -12,6 +12,7 @@ include { paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText            } from '../subworkflows/local/utils_nfcore_primeseq_pipeline'
+include { getGenomeAttribute                } from '../subworkflows/local/utils_nfcore_primeseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,13 +24,15 @@ workflow PRIMESEQ {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    wells
     ch_star_index
-    ch_wells
 
     main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    whitelist = file("$projectDir/assets/whitelist.tsv", checkIfExists: true)
 
     //
     // MODULE: Run FastQC
@@ -43,26 +46,14 @@ workflow PRIMESEQ {
     //
     // MODULE: Run STARSolo
     //
-    ch_reads = ch_samplesheet.map {
-        meta, fastq -> [
-            [
-                id: meta.id,
-                plate_id: meta.plate_id,
-                umi_len: 16,
-                umi_start: 13,
-                cb_len: 12,
-                cb_start: 1,
-            ], "CB_UMI_Simple", fastq
-        ]
-    }
-    STARSOLO ( ch_reads, ch_star_index )
+    STARSOLO ( ch_samplesheet, ch_star_index, whitelist )
     ch_versions = ch_versions.mix(STARSOLO.out.versions.first())
     ch_multiqc_files = ch_multiqc_files.mix(STARSOLO.out.for_multiqc)
 
     //
     // MODULE: Merge wells and create count matrix
     //
-    MAKE_COUNT_MATRIX ( STARSOLO.out.counts.combine(ch_wells) )
+    MAKE_COUNT_MATRIX ( STARSOLO.out.counts.combine(wells) )
     ch_versions = ch_versions.mix(MAKE_COUNT_MATRIX.out.versions.first())
 
     //

@@ -36,6 +36,7 @@ workflow PIPELINE_INITIALISATION {
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input samplesheet
+    wells             // string: Path to wells sheet
 
     main:
 
@@ -100,9 +101,14 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
+    ch_wells = Channel.fromPath(wells, checkIfExists: true)
+    star_index = Channel.fromPath(file(getGenomeAttribute('star'), checkIfExists: true)).map { it -> [[id:it.Name], it] }.collect()
+
     emit:
     samplesheet = ch_samplesheet
     versions    = ch_versions
+    wells       = ch_wells
+    star_index  = star_index
 }
 
 /*

@@ -4,17 +4,27 @@ workflow STARSOLO {
 
     take:
     reads // channel: [ val(meta), [ fastq ] ]
-    index
+    index // channel [ val(meta), [starindex] ]
+    whitelist // file [whitelist]
 
     main:
 
     ch_versions = Channel.empty()
 
-    STARSOLO_ALIGN (
-        reads,
-        Channel.fromPath("$projectDir/assets/whitelist.tsv", checkIfExists: true),
-        index
-    )
+    ch_reads = reads.map {
+        meta, fastq -> [
+            [
+                id: meta.id,
+                plate_id: meta.plate_id,
+                umi_len: 16,
+                umi_start: 13,
+                cb_len: 12,
+                cb_start: 1,
+            ], "CB_UMI_Simple", fastq
+        ]
+    }
+
+    STARSOLO_ALIGN ( ch_reads, whitelist, index )
 
     ch_versions = ch_versions.mix(STARSOLO_ALIGN.out.versions.first())
 

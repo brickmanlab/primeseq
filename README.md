@@ -56,6 +56,31 @@ nextflow run brickmanlab/primeseq \
     --outdir output
 ```
 
+or by creating slurm batch script (`align.sbatch`)
+
+```bash
+#!/bin/bash
+
+#SBATCH --job-name=align
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=NONE
+#SBATCH -c 1
+#SBATCH --mem=2gb
+#SBATCH --time=1-00:00:00
+#SBATCH --output=align.log
+#SBATCH -w dancmpn02fl
+
+module load openjdk/20.0.0 nextflow/23.04.1.5866 singularity/3.8.0
+
+nextflow run /home/fdb589/primeseq \
+    -with-tower \
+    -profile ku_sund_danhead,dancmpn02fl \
+    --genome GRCm39-2024-A \
+    --input samplesheet.csv \
+    --wells wells.csv \
+    --outdir results
+```
+
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
