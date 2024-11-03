@@ -28,9 +28,7 @@ lint:
 nf_core_version: 2.14.1
 repository_type: pipeline
 template:
-  author:
-    - Martin Proks
-    - Nazmus Salehin
+  author: "Martin Proks, Nazmus Salehin"
   description: PRIME-seq preprocessing pipeline
   name: primeseq
   prefix: brickmanlab
